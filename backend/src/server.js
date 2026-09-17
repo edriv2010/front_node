@@ -1,1 +1,32 @@
-import express from "express"; import cors from "cors"; import dotenv from "dotenv"; import bcrypt from "bcryptjs"; import jwt from "jsonwebtoken"; dotenv.config(); const app=express(); app.use(cors({origin:true,allowedHeaders:["Content-Type","Authorization","ngrok-skip-browser-warning"]})); app.use(express.json()); app.get("/",(req,res)=>res.send("OK FINAL LAPHAR PIMPINAN - SHEET_ID 1roBOQ... - Node >3 Hari DIHAPUS - Gangguan SEMUA - Laphar Kapusdatin")); app.post("/api/login",(req,res)=>{ const token=require("jsonwebtoken").sign({id:1,username:"admin",role:"admin",nama:"Administrator"},"secret",{expiresIn:"8h"}); res.json({token,user:{username:"admin",nama:"Administrator",role:"admin"}}); }); app.get("/api/contacts", async (req,res)=>{ try{ const csvUrl=`https://docs.google.com/spreadsheets/d/${process.env.SHEET_ID}/export?format=csv&gid=${process.env.EN_LOCAL_GID||0}`; const r=await fetch(csvUrl); const csv=await r.text(); res.json({csv:csv.slice(0,60000),rows:csv.split("\n").length,source:"GOOGLE_SHEET_ASLI"}); }catch(e){ res.json({error:e.message}); } }); app.listen(4000,"0.0.0.0",()=>console.log("Backend FINAL LAPHAR jalan"));
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const SHEET_ID = process.env.SHEET_ID; // JANGAN DITAMPILKAN DI FRONTEND
+const GID = process.env.GID; // JANGAN DITAMPILKAN
+const API_KEY = process.env.GOOGLE_API_KEY;
+
+app.get("/", (req,res)=> res.send("ESDM Backend - SHEETID HIDDEN"));
+
+app.get("/api/gangguan", async (req,res)=>{
+  try {
+    if(!SHEET_ID || !API_KEY){
+      // fallback ke dummy jika env belum diisi - untuk demo Vercel
+      return res.json({source:"dummy-secure", note:"SHEET_ID disimpan di .env backend, tidak tampil di frontend", data:[]});
+    }
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${API_KEY}`;
+    const r = await fetch(url);
+    const j = await r.json();
+    res.json({source:"google-sheets", sheet_id:"HIDDEN", gid:"HIDDEN", values:j.values?.slice(0,20) || []});
+  } catch(e){
+    res.status(500).json({error:e.message, sheet_id:"HIDDEN"});
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, ()=> console.log(`Backend jalan di ${PORT} - SHEETID HIDDEN`));
