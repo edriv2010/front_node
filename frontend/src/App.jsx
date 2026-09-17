@@ -111,7 +111,7 @@ export default function App(){
         </div>
       )}
 
-      {tab==="gangguan" && (
+      {(tab==="dashboard" || tab==="gangguan") && (
         <div style={{padding:10}}>
           <div style={{border:"1px solid #22c55e",borderRadius:12,padding:12}}>
             <b>Laporan Gangguan - {waktu} | LINK={link} KENDALA={kendala} → SEMUA {filtered.length} gangguan (bukan >3x saja) - FIX</b>
