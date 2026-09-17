@@ -1,5 +1,5 @@
 @echo off
-echo ESDM SuperApp - SIAP GITHUB - Tab awal Dashboard - Node >3 Hari DIHAPUS - Gangguan SEMUA - Laphar Pimpinan
+echo ESDM FINAL LAPHAR PIMPINAN PUSDATIN + NODE SERING >3x + GANGGUAN SEMUA
 cd backend
 start cmd /k npm install ^&^& npm run dev
 cd ..\frontend
